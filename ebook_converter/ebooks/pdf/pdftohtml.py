@@ -24,6 +24,7 @@ def pdftohtml(output_dir, pdf_path, no_images, as_xml=False):
     This will write the html as index.html into output_dir.
     It will also write all extracted images to the output_dir
     '''
+    no_images = True
 
     pdfsrc = os.path.join(output_dir, 'src.pdf')
     index = os.path.join(output_dir, 'index.'+('xml' if as_xml else 'html'))
@@ -144,6 +145,7 @@ def flip_image(img, flip):
 
 
 def flip_images(raw):
+    # DO NOT DO ANYTHING TO IMAGES
     for match in re.finditer('<IMG[^>]+/?>', raw, flags=re.I):
         img = match.group()
         m = re.search(r'class="(x|y|xy)flip"', img)
@@ -156,6 +158,7 @@ def flip_images(raw):
         img = src.group(1)
         if not os.path.exists(img):
             continue
+        raise RuntimeError
         flip_image(img, flip)
     raw = re.sub(r'<STYLE.+?</STYLE>\s*', '', raw, flags=re.I | re.DOTALL)
     return raw
